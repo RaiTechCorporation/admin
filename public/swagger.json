@@ -1,0 +1,2434 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Groovsta API",
+        "description": "Complete API documentation for Groovsta social media platform",
+        "version": "1.0.0",
+        "contact": {
+            "name": "API Support",
+            "email": "support@groovsta.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API Server"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/user/logInUser": {
+            "post": {
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "Login user",
+                "security": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/logInFakeUser": {
+            "post": {
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "Login with fake user",
+                "security": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/logOutUser": {
+            "post": {
+                "tags": [
+                    "User Authentication"
+                ],
+                "summary": "Logout user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/updateUserDetails": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Update user details",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/addUserLink": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Add user link",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/deleteUserLink": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Delete user link",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/editeUserLink": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Edit user link",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/updateLastUsedAt": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Update last used timestamp",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/checkUsernameAvailability": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Check username availability",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/blockUser": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Block a user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/unBlockUser": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Unblock a user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/fetchMyBlockedUsers": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Fetch blocked users",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/fetchUserDetails": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Fetch user details",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/followUser": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Follow a user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/unFollowUser": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Unfollow a user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/fetchUserFollowers": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Fetch user followers",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/fetchUserFollowings": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Fetch user followings",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/fetchMyFollowers": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Fetch my followers",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/fetchMyFollowings": {
+            "post": {
+                "tags": [
+                    "User Relationships"
+                ],
+                "summary": "Fetch my followings",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/searchUsers": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Search users",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/user/deleteMyAccount": {
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Delete my account",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/addUserMusic": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Add user music",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/addPost_Reel": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create reel post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/addPost_Feed_Video": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create video feed post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/addPost_Feed_Image": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create image feed post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/addPost_Feed_Text": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create text feed post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/serchMusic": {
+            "post": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "Search music",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchMusicExplore": {
+            "post": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "Fetch explore music",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchMusicByCategories": {
+            "post": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "Fetch music by categories",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchSavedMusics": {
+            "post": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "Fetch saved music",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/likePost": {
+            "post": {
+                "tags": [
+                    "Post Interactions"
+                ],
+                "summary": "Like a post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/disLikePost": {
+            "post": {
+                "tags": [
+                    "Post Interactions"
+                ],
+                "summary": "Unlike a post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/increaseViewsCount": {
+            "post": {
+                "tags": [
+                    "Post Interactions"
+                ],
+                "summary": "Increase views count",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/increaseShareCount": {
+            "post": {
+                "tags": [
+                    "Post Interactions"
+                ],
+                "summary": "Increase share count",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/savePost": {
+            "post": {
+                "tags": [
+                    "Post Interactions"
+                ],
+                "summary": "Save a post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/unSavePost": {
+            "post": {
+                "tags": [
+                    "Post Interactions"
+                ],
+                "summary": "Unsave a post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/addPostComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Add post comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchCommentById": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Fetch comment by ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchCommentByReplyId": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Fetch comment by reply ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/likeComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Like a comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/disLikeComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Unlike a comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/deleteComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Delete a comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/pinComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Pin a comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/unPinComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Unpin a comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/pinPost": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Pin a post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/unpinPost": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Unpin a post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/replyToComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Reply to a comment",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/deleteCommentReply": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Delete comment reply",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostComments": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Fetch post comments",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostCommentReplies": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Fetch post comment replies",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostById": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch post by ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostsDiscover": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch discover posts",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostsFollowing": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch following posts",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchReelPostsByMusic": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch reel posts by music",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostsByHashtag": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch posts by hashtag",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchUserPosts": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch user posts",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchSavedPosts": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch saved posts",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchExplorePageData": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch explore page data",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostsByLocation": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch posts by location",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchPostsNearBy": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Fetch nearby posts",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/searchPosts": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Search posts",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/searchHashtags": {
+            "post": {
+                "tags": [
+                    "Hashtags"
+                ],
+                "summary": "Search hashtags",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/deletePost": {
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/createStory": {
+            "post": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Create story",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/viewStory": {
+            "post": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "View story",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchStory": {
+            "post": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Fetch stories",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/deleteStory": {
+            "post": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Delete story",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/post/fetchStoryByID": {
+            "post": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Fetch story by ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/sendGift": {
+            "post": {
+                "tags": [
+                    "Wallet & Gifts"
+                ],
+                "summary": "Send gift",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/submitWithdrawalRequest": {
+            "post": {
+                "tags": [
+                    "Wallet & Gifts"
+                ],
+                "summary": "Submit withdrawal request",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/fetchMyWithdrawalRequest": {
+            "post": {
+                "tags": [
+                    "Wallet & Gifts"
+                ],
+                "summary": "Fetch withdrawal requests",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/buyCoins": {
+            "post": {
+                "tags": [
+                    "Wallet & Gifts"
+                ],
+                "summary": "Buy coins",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/reportPost": {
+            "post": {
+                "tags": [
+                    "Moderation"
+                ],
+                "summary": "Report post",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/reportUser": {
+            "post": {
+                "tags": [
+                    "Moderation"
+                ],
+                "summary": "Report user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/fetchAdminNotifications": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Fetch admin notifications",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/pushNotificationToSingleUser": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Push notification to user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/misc/fetchActivityNotifications": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Fetch activity notifications",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/moderator/moderator_freezeUser": {
+            "post": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Freeze user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/moderator/moderator_unFreezeUser": {
+            "post": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Unfreeze user",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/moderator/moderator_deletePost": {
+            "post": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Delete post (moderator)",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/moderator/moderator_deleteStory": {
+            "post": {
+                "tags": [
+                    "Moderator"
+                ],
+                "summary": "Delete story (moderator)",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/settings/fetchSettings": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Fetch settings",
+                "security": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/settings/uploadFileGivePath": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Upload file",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/settings/deleteFile": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete file",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/cron/reGeneratePlaceApiToken": {
+            "get": {
+                "tags": [
+                    "Cron Jobs"
+                ],
+                "summary": "Regenerate place API token",
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/cron/deleteExpiredStories": {
+            "get": {
+                "tags": [
+                    "Cron Jobs"
+                ],
+                "summary": "Delete expired stories",
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/cron/deleteOldNotifications": {
+            "get": {
+                "tags": [
+                    "Cron Jobs"
+                ],
+                "summary": "Delete old notifications",
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/cron/countDailyActiveUsers": {
+            "get": {
+                "tags": [
+                    "Cron Jobs"
+                ],
+                "summary": "Count daily active users",
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        },
+        "/cron/cleanDemoAppData": {
+            "get": {
+                "tags": [
+                    "Cron Jobs"
+                ],
+                "summary": "Clean demo app data",
+                "responses": {
+                    "200": {
+                        "description": "Operation successful"
+                    }
+                }
+            }
+        }
+    }
+}

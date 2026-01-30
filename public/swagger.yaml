@@ -1,0 +1,539 @@
+openapi: 3.0.0
+info:
+  title: Groovsta API
+  description: API documentation for Groovsta social media platform
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@groovsta.com
+
+servers:
+  - url: /api
+    description: API Server
+
+paths:
+  /user/logInUser:
+    post:
+      tags:
+        - User Authentication
+      summary: Login user
+      description: Authenticate user with credentials
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  user:
+                    type: object
+        '401':
+          description: Invalid credentials
+
+  /user/logOutUser:
+    post:
+      tags:
+        - User Authentication
+      summary: Logout user
+      description: Logout the authenticated user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+
+  /user/fetchUserDetails:
+    post:
+      tags:
+        - User Management
+      summary: Fetch user details
+      description: Get profile information of a user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: User details retrieved
+
+  /user/updateUserDetails:
+    post:
+      tags:
+        - User Management
+      summary: Update user details
+      description: Update profile information
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                bio:
+                  type: string
+                profile_picture:
+                  type: string
+      responses:
+        '200':
+          description: User updated successfully
+
+  /user/followUser:
+    post:
+      tags:
+        - User Relationships
+      summary: Follow a user
+      description: Follow another user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: User followed successfully
+
+  /user/unFollowUser:
+    post:
+      tags:
+        - User Relationships
+      summary: Unfollow a user
+      description: Stop following a user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: User unfollowed successfully
+
+  /user/blockUser:
+    post:
+      tags:
+        - User Relationships
+      summary: Block a user
+      description: Block another user from viewing your profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: User blocked successfully
+
+  /post/addPost_Feed_Image:
+    post:
+      tags:
+        - Posts
+      summary: Create image post
+      description: Add a new image post to feed
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                caption:
+                  type: string
+                location:
+                  type: string
+      responses:
+        '200':
+          description: Post created successfully
+
+  /post/addPost_Feed_Video:
+    post:
+      tags:
+        - Posts
+      summary: Create video post
+      description: Add a new video post to feed
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+                caption:
+                  type: string
+                thumbnail:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Post created successfully
+
+  /post/addPost_Feed_Text:
+    post:
+      tags:
+        - Posts
+      summary: Create text post
+      description: Add a new text post to feed
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                location:
+                  type: string
+      responses:
+        '200':
+          description: Post created successfully
+
+  /post/addPost_Reel:
+    post:
+      tags:
+        - Posts
+      summary: Create reel post
+      description: Add a new reel (short video) post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+                music_id:
+                  type: integer
+                caption:
+                  type: string
+      responses:
+        '200':
+          description: Reel created successfully
+
+  /post/likePost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Like a post
+      description: Like a post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post liked successfully
+
+  /post/disLikePost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Unlike a post
+      description: Remove like from a post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post unliked successfully
+
+  /post/savePost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Save a post
+      description: Save a post to bookmarks
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post saved successfully
+
+  /post/addPostComment:
+    post:
+      tags:
+        - Comments
+      summary: Add comment to post
+      description: Add a new comment to a post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+                comment_text:
+                  type: string
+      responses:
+        '200':
+          description: Comment added successfully
+
+  /post/fetchPostComments:
+    post:
+      tags:
+        - Comments
+      summary: Fetch post comments
+      description: Get all comments for a post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+                page:
+                  type: integer
+      responses:
+        '200':
+          description: Comments retrieved successfully
+
+  /post/createStory:
+    post:
+      tags:
+        - Stories
+      summary: Create story
+      description: Upload a new story
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                media:
+                  type: string
+                  format: binary
+                duration:
+                  type: integer
+      responses:
+        '200':
+          description: Story created successfully
+
+  /post/fetchStory:
+    post:
+      tags:
+        - Stories
+      summary: Fetch stories
+      description: Get stories from followed users
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Stories retrieved successfully
+
+  /post/serchMusic:
+    post:
+      tags:
+        - Music
+      summary: Search music
+      description: Search for music tracks
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                page:
+                  type: integer
+      responses:
+        '200':
+          description: Search results returned
+
+  /misc/sendGift:
+    post:
+      tags:
+        - Wallet & Gifts
+      summary: Send gift
+      description: Send a gift to another user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipient_id:
+                  type: integer
+                gift_id:
+                  type: integer
+      responses:
+        '200':
+          description: Gift sent successfully
+
+  /misc/buyCoins:
+    post:
+      tags:
+        - Wallet & Gifts
+      summary: Buy coins
+      description: Purchase coins for the platform
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                payment_method:
+                  type: string
+      responses:
+        '200':
+          description: Purchase successful
+
+  /misc/reportPost:
+    post:
+      tags:
+        - Moderation
+      summary: Report post
+      description: Report inappropriate post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Report submitted successfully
+
+  /misc/reportUser:
+    post:
+      tags:
+        - Moderation
+      summary: Report user
+      description: Report inappropriate user
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Report submitted successfully
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
