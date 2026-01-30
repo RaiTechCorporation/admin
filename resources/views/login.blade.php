@@ -41,7 +41,7 @@
         }
 
         .card-header.bg-primary {
-            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%) !important;
             border-bottom: none !important;
         }
 
