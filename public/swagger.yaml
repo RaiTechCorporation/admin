@@ -1,7 +1,17 @@
 openapi: 3.0.0
 info:
   title: Groovsta API
-  description: API documentation for Groovsta social media platform
+  description: |
+    Complete API documentation for Groovsta social media platform.
+    
+    ### Authentication
+    All requests require the `APIKEY` header.
+    - **Header**: `APIKEY`
+    - **Value**: `retry123`
+    
+    For protected routes, you must also provide the `AUTHTOKEN` received during login.
+    - **Header**: `AUTHTOKEN`
+    - **Value**: `[Your-Auth-Token]`
   version: 1.0.0
   contact:
     name: API Support
@@ -11,348 +21,603 @@ servers:
   - url: /api
     description: API Server
 
+components:
+  securitySchemes:
+    APIKeyAuth:
+      type: apiKey
+      in: header
+      name: APIKEY
+      description: Main API Key required for all requests.
+    AuthToken:
+      type: apiKey
+      in: header
+      name: AUTHTOKEN
+      description: User authentication token received after login.
+
+security:
+  - APIKeyAuth: []
+
 paths:
   /user/logInUser:
     post:
       tags:
         - User Authentication
-      summary: Login user
-      description: Authenticate user with credentials
+      summary: Login or Register User
+      description: |
+        Authenticates a user. If the `identity` is new, a new user account is created automatically.
+        Returns an `AUTHTOKEN` which must be used for authorized requests.
+      parameters:
+        - in: header
+          name: APIKEY
+          description: Main API Key
+          required: true
+          schema:
+            type: string
+            default: retry123
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - fullname
+                - identity
+                - device_token
+                - device
+                - login_method
               properties:
-                email:
+                fullname:
                   type: string
-                  format: email
-                password:
+                  example: "Rahul Sharma"
+                identity:
                   type: string
-                  format: password
+                  description: Unique identifier (Email, Social ID, etc.)
+                  example: "rahul.sharma@example.com"
+                device_token:
+                  type: string
+                  example: "test_token_123"
+                device:
+                  type: string
+                  enum: [android, ios, web]
+                  example: "android"
+                login_method:
+                  type: string
+                  enum: [google, facebook, apple, manual]
+                  example: "google"
+                profile_photo:
+                  type: string
+                  description: Optional profile photo URL or binary file string
+                  example: ""
       responses:
         '200':
-          description: Login successful
+          description: Login/Registration successful
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: boolean
-                  message:
-                    type: string
-                  user:
-                    type: object
+              example:
+                status: true
+                message: "Data Fetch Successful!"
+                data:
+                  id: 1
+                  token: "generated_auth_token_here"
+                  fullname: "Rahul Sharma"
+                  username: "rahul_sharma"
+                  identity: "rahul.sharma@example.com"
         '401':
-          description: Invalid credentials
+          description: Unauthorized Access (Missing or invalid APIKEY)
+
+  /user/logInFakeUser:
+    post:
+      tags:
+        - User Authentication
+      summary: Login with Dummy User
+      description: Login using credentials of a dummy user created from the admin panel.
+      parameters:
+        - in: header
+          name: APIKEY
+          required: true
+          schema:
+            type: string
+            default: retry123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identity, password, device_token, device, login_method]
+              properties:
+                identity:
+                  type: string
+                  example: "dummy_user"
+                password:
+                  type: string
+                  example: "password123"
+                device_token:
+                  type: string
+                  example: "test_token"
+                device:
+                  type: string
+                  example: "android"
+                login_method:
+                  type: string
+                  example: "manual"
+      responses:
+        '200':
+          description: Operation successful
 
   /user/logOutUser:
     post:
       tags:
         - User Authentication
-      summary: Logout user
-      description: Logout the authenticated user
+      summary: Logout User
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       responses:
         '200':
-          description: Logout successful
-
-  /user/fetchUserDetails:
-    post:
-      tags:
-        - User Management
-      summary: Fetch user details
-      description: Get profile information of a user
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: integer
-      responses:
-        '200':
-          description: User details retrieved
+          description: Logged out successfully
 
   /user/updateUserDetails:
     post:
       tags:
         - User Management
-      summary: Update user details
-      description: Update profile information
+      summary: Update Profile
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              properties:
+                fullname:
+                  type: string
+                  example: "Rahul Sharma"
+                username:
+                  type: string
+                  example: "rahul_sharma"
+                bio:
+                  type: string
+                  example: "Bio here"
+                profile_photo:
+                  type: string
+                  description: Base64 or URL
+                user_email:
+                  type: string
+                user_mobile_no:
+                  type: string
+                mobile_country_code:
+                  type: string
+                is_verify:
+                  type: integer
+                  enum: [0, 1]
+      responses:
+        '200':
+          description: Profile updated successfully
+
+  /user/addUserLink:
+    post:
+      tags:
+        - User Management
+      summary: Add User Social Link
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, url]
+              properties:
+                title:
+                  type: string
+                  example: "Instagram"
+                url:
+                  type: string
+                  example: "https://instagram.com/rahul"
+      responses:
+        '200':
+          description: Link added successfully
+
+  /user/editeUserLink:
+    post:
+      tags:
+        - User Management
+      summary: Edit User Social Link
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [link_id, title, url]
+              properties:
+                link_id:
+                  type: integer
+                title:
+                  type: string
+                url:
+                  type: string
+      responses:
+        '200':
+          description: Link updated successfully
+
+  /user/deleteUserLink:
+    post:
+      tags:
+        - User Management
+      summary: Delete User Social Link
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [link_id]
+              properties:
+                link_id:
+                  type: integer
+      responses:
+        '200':
+          description: Link deleted successfully
+
+  /user/checkUsernameAvailability:
+    post:
+      tags:
+        - User Management
+      summary: Check Username Availability
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username]
               properties:
                 username:
                   type: string
-                bio:
-                  type: string
-                profile_picture:
-                  type: string
       responses:
         '200':
-          description: User updated successfully
-
-  /user/followUser:
-    post:
-      tags:
-        - User Relationships
-      summary: Follow a user
-      description: Follow another user
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: integer
-      responses:
-        '200':
-          description: User followed successfully
-
-  /user/unFollowUser:
-    post:
-      tags:
-        - User Relationships
-      summary: Unfollow a user
-      description: Stop following a user
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: integer
-      responses:
-        '200':
-          description: User unfollowed successfully
+          description: Availability status returned
 
   /user/blockUser:
     post:
       tags:
-        - User Relationships
-      summary: Block a user
-      description: Block another user from viewing your profile
+        - User Actions
+      summary: Block a User
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [user_id]
               properties:
                 user_id:
                   type: integer
       responses:
         '200':
-          description: User blocked successfully
+          description: User blocked
 
-  /post/addPost_Feed_Image:
+  /user/unBlockUser:
     post:
       tags:
-        - Posts
-      summary: Create image post
-      description: Add a new image post to feed
+        - User Actions
+      summary: Unblock a User
       security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                image:
-                  type: string
-                  format: binary
-                caption:
-                  type: string
-                location:
-                  type: string
-      responses:
-        '200':
-          description: Post created successfully
-
-  /post/addPost_Feed_Video:
-    post:
-      tags:
-        - Posts
-      summary: Create video post
-      description: Add a new video post to feed
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                video:
-                  type: string
-                  format: binary
-                caption:
-                  type: string
-                thumbnail:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: Post created successfully
-
-  /post/addPost_Feed_Text:
-    post:
-      tags:
-        - Posts
-      summary: Create text post
-      description: Add a new text post to feed
-      security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [user_id]
               properties:
-                content:
-                  type: string
-                location:
-                  type: string
+                user_id:
+                  type: integer
       responses:
         '200':
-          description: Post created successfully
+          description: User unblocked
 
-  /post/addPost_Reel:
+  /user/followUser:
     post:
       tags:
-        - Posts
-      summary: Create reel post
-      description: Add a new reel (short video) post
+        - User Actions
+      summary: Follow a User
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
+              required: [user_id]
               properties:
-                video:
-                  type: string
-                  format: binary
-                music_id:
+                user_id:
                   type: integer
-                caption:
-                  type: string
       responses:
         '200':
-          description: Reel created successfully
+          description: User followed
+
+  /user/unFollowUser:
+    post:
+      tags:
+        - User Actions
+      summary: Unfollow a User
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id]
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: User unfollowed
+
+  /user/fetchUserFollowers:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch User Followers
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, limit]
+              properties:
+                user_id:
+                  type: integer
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Followers list
+
+  /user/fetchUserFollowings:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch User Followings
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, limit]
+              properties:
+                user_id:
+                  type: integer
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Following list
+
+  /user/fetchMyFollowers:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch My Followers
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit]
+              properties:
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: My followers list
+
+  /user/fetchMyFollowings:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch My Followings
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit]
+              properties:
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: My followings list
+
+  /user/searchUsers:
+    post:
+      tags:
+        - User Actions
+      summary: Search Users
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, keyword]
+              properties:
+                limit:
+                  type: integer
+                keyword:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Search results
+
+  /user/fetchMyBlockedUsers:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch My Blocked Users
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      responses:
+        '200':
+          description: Blocked users list
+
+  /user/fetchUserDetails:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch User Profile Details
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id]
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: User profile details fetched successfully
+
+  /user/updateLastUsedAt:
+    post:
+      tags:
+        - User Management
+      summary: Update Last Used Time
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      responses:
+        '200':
+          description: Updated successfully
+
+  /user/deleteMyAccount:
+    post:
+      tags:
+        - User Management
+      summary: Delete My Account
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      responses:
+        '200':
+          description: Account deleted successfully
 
   /post/likePost:
     post:
       tags:
         - Post Interactions
-      summary: Like a post
-      description: Like a post
+      summary: Like a Post
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [post_id]
               properties:
                 post_id:
                   type: integer
+                  example: 1
       responses:
         '200':
           description: Post liked successfully
 
-  /post/disLikePost:
-    post:
-      tags:
-        - Post Interactions
-      summary: Unlike a post
-      description: Remove like from a post
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                post_id:
-                  type: integer
-      responses:
-        '200':
-          description: Post unliked successfully
-
-  /post/savePost:
-    post:
-      tags:
-        - Post Interactions
-      summary: Save a post
-      description: Save a post to bookmarks
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                post_id:
-                  type: integer
-      responses:
-        '200':
-          description: Post saved successfully
-
   /post/addPostComment:
     post:
       tags:
-        - Comments
-      summary: Add comment to post
-      description: Add a new comment to a post
+        - Post Interactions
+      summary: Add Comment
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [post_id, comment, type]
               properties:
                 post_id:
                   type: integer
-                comment_text:
+                comment:
                   type: string
+                  example: "Great post!"
+                type:
+                  type: integer
+                  enum: [1, 2]
+                  description: "1=Text, 2=Image"
+                mentioned_user_ids:
+                  type: string
+                  description: "Comma separated user IDs"
       responses:
         '200':
           description: Comment added successfully
@@ -360,180 +625,1495 @@ paths:
   /post/fetchPostComments:
     post:
       tags:
-        - Comments
-      summary: Fetch post comments
-      description: Get all comments for a post
+        - Post Interactions
+      summary: Fetch Post Comments
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [post_id, limit]
               properties:
                 post_id:
                   type: integer
-                page:
+                limit:
+                  type: integer
+                last_item_id:
                   type: integer
       responses:
         '200':
-          description: Comments retrieved successfully
+          description: Comments list
+
+  /post/fetchCommentById:
+    post:
+      tags:
+        - Post Interactions
+      summary: Fetch Comment by ID
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id]
+              properties:
+                comment_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment details
+
+  /post/fetchCommentByReplyId:
+    post:
+      tags:
+        - Post Interactions
+      summary: Fetch Comment by Reply ID
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reply_id]
+              properties:
+                reply_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment details
+
+  /post/likeComment:
+    post:
+      tags:
+        - Post Interactions
+      summary: Like a Comment
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id]
+              properties:
+                comment_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment liked
+
+  /post/disLikeComment:
+    post:
+      tags:
+        - Post Interactions
+      summary: Dislike a Comment
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id]
+              properties:
+                comment_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment disliked
+
+  /post/deleteComment:
+    post:
+      tags:
+        - Post Interactions
+      summary: Delete a Comment
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id]
+              properties:
+                comment_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment deleted
+
+  /post/pinComment:
+    post:
+      tags:
+        - Post Interactions
+      summary: Pin a Comment
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id]
+              properties:
+                comment_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment pinned
+
+  /post/unPinComment:
+    post:
+      tags:
+        - Post Interactions
+      summary: Unpin a Comment
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id]
+              properties:
+                comment_id:
+                  type: integer
+      responses:
+        '200':
+          description: Comment unpinned
+
+  /post/replyToComment:
+    post:
+      tags:
+        - Post Interactions
+      summary: Reply to a Comment
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id, reply]
+              properties:
+                comment_id:
+                  type: integer
+                reply:
+                  type: string
+                mentioned_user_ids:
+                  type: string
+      responses:
+        '200':
+          description: Reply added
+
+  /post/deleteCommentReply:
+    post:
+      tags:
+        - Post Interactions
+      summary: Delete a Comment Reply
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reply_id]
+              properties:
+                reply_id:
+                  type: integer
+      responses:
+        '200':
+          description: Reply deleted
+
+  /post/fetchPostCommentReplies:
+    post:
+      tags:
+        - Post Interactions
+      summary: Fetch Comment Replies
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comment_id, limit]
+              properties:
+                comment_id:
+                  type: integer
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Replies list
+
+  /post/addUserMusic:
+    post:
+      tags:
+        - Post Creation
+      summary: Add User Custom Music
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, sound, duration, artist]
+              properties:
+                title:
+                  type: string
+                sound:
+                  type: string
+                  description: File or URL
+                duration:
+                  type: string
+                artist:
+                  type: string
+                image:
+                  type: string
+      responses:
+        '200':
+          description: Music added successfully
+
+  /post/addPost_Reel:
+    post:
+      tags:
+        - Post Creation
+      summary: Create Reel Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [can_comment, video, thumbnail]
+              properties:
+                can_comment:
+                  type: integer
+                  enum: [0, 1]
+                video:
+                  type: string
+                thumbnail:
+                  type: string
+                description:
+                  type: string
+                hashtags:
+                  type: string
+                sound_id:
+                  type: integer
+      responses:
+        '200':
+          description: Reel created successfully
+
+  /post/addPost_Feed_Video:
+    post:
+      tags:
+        - Post Creation
+      summary: Create Feed Video Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [can_comment, video, thumbnail]
+              properties:
+                can_comment:
+                  type: integer
+                  enum: [0, 1]
+                video:
+                  type: string
+                thumbnail:
+                  type: string
+                description:
+                  type: string
+                hashtags:
+                  type: string
+      responses:
+        '200':
+          description: Video post created successfully
+
+  /post/addPost_Feed_Image:
+    post:
+      tags:
+        - Post Creation
+      summary: Create Feed Image Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [can_comment, post_images]
+              properties:
+                can_comment:
+                  type: integer
+                  enum: [0, 1]
+                post_images:
+                  type: string
+                  description: Comma separated images
+                description:
+                  type: string
+                hashtags:
+                  type: string
+      responses:
+        '200':
+          description: Image post created successfully
+
+  /post/addPost_Feed_Text:
+    post:
+      tags:
+        - Post Creation
+      summary: Create Feed Text Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [can_comment, description]
+              properties:
+                can_comment:
+                  type: integer
+                  enum: [0, 1]
+                description:
+                  type: string
+                hashtags:
+                  type: string
+      responses:
+        '200':
+          description: Text post created successfully
+
+  /post/disLikePost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Dislike a Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post disliked successfully
+
+  /post/increaseViewsCount:
+    post:
+      tags:
+        - Post Interactions
+      summary: Increase View Count
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: View count updated
+
+  /post/increaseShareCount:
+    post:
+      tags:
+        - Post Interactions
+      summary: Increase Share Count
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Share count updated
+
+  /post/savePost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Save a Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post saved successfully
+
+  /post/unSavePost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Unsave a Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post unsaved successfully
+
+  /post/pinPost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Pin Post to Profile
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post pinned
+
+  /post/unpinPost:
+    post:
+      tags:
+        - Post Interactions
+      summary: Unpin Post from Profile
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post unpinned
+
+  /post/fetchPostById:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Post by ID
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post details
+
+  /post/fetchPostsDiscover:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Discover Posts
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, types]
+              properties:
+                limit:
+                  type: integer
+                types:
+                  type: string
+                  example: "1,2,3"
+      responses:
+        '200':
+          description: Discover posts list
+
+  /post/fetchPostsFollowing:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Following Posts
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, types]
+              properties:
+                limit:
+                  type: integer
+                types:
+                  type: string
+                  example: "1,2,3"
+      responses:
+        '200':
+          description: Following posts list
+
+  /post/fetchReelPostsByMusic:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Reels by Music ID
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, music_id]
+              properties:
+                limit:
+                  type: integer
+                music_id:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Reels list
+
+  /post/fetchPostsByHashtag:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Posts by Hashtag
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, hashtag, types]
+              properties:
+                limit:
+                  type: integer
+                hashtag:
+                  type: string
+                types:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Posts list
+
+  /post/fetchUserPosts:
+    post:
+      tags:
+        - Posts
+      summary: Fetch User Posts
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, user_id, types]
+              properties:
+                limit:
+                  type: integer
+                user_id:
+                  type: integer
+                types:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: User posts list
+
+  /post/fetchSavedPosts:
+    post:
+      tags:
+        - Posts
+      summary: Fetch My Saved Posts
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, types]
+              properties:
+                limit:
+                  type: integer
+                types:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Saved posts list
+
+  /post/fetchExplorePageData:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Explore Page Data
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      responses:
+        '200':
+          description: Explore page data
+
+  /post/fetchPostsByLocation:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Posts by Location
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [place_lat, place_lon, limit, types]
+              properties:
+                place_lat:
+                  type: string
+                place_lon:
+                  type: string
+                limit:
+                  type: integer
+                types:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Posts list
+
+  /post/fetchPostsNearBy:
+    post:
+      tags:
+        - Posts
+      summary: Fetch Nearby Posts
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [place_lat, place_lon, types]
+              properties:
+                place_lat:
+                  type: string
+                place_lon:
+                  type: string
+                types:
+                  type: string
+      responses:
+        '200':
+          description: Nearby posts list
+
+  /post/searchPosts:
+    post:
+      tags:
+        - Posts
+      summary: Search Posts
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit, types]
+              properties:
+                limit:
+                  type: integer
+                types:
+                  type: string
+                keyword:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Search results
+
+  /post/deletePost:
+    post:
+      tags:
+        - Posts
+      summary: Delete Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post deleted successfully
+
+  /misc/sendGift:
+    post:
+      tags:
+        - Wallet & Gifts
+      summary: Send Gift to User
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, gift_id]
+              properties:
+                user_id:
+                  type: integer
+                gift_id:
+                  type: integer
+      responses:
+        '200':
+          description: Gift sent
+
+  /misc/submitWithdrawalRequest:
+    post:
+      tags:
+        - Wallet & Gifts
+      summary: Submit Withdrawal Request
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [coins, gateway, account]
+              properties:
+                coins:
+                  type: integer
+                gateway:
+                  type: string
+                account:
+                  type: string
+      responses:
+        '200':
+          description: Request submitted
+
+  /misc/fetchMyWithdrawalRequest:
+    post:
+      tags:
+        - Wallet & Gifts
+      summary: Fetch My Withdrawal Requests
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit]
+              properties:
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Withdrawal requests list
+
+  /misc/buyCoins:
+    post:
+      tags:
+        - Wallet & Gifts
+      summary: Buy Coins (RevenueCat Verification)
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [coin_package_id, purchased_at]
+              properties:
+                coin_package_id:
+                  type: integer
+                purchased_at:
+                  type: integer
+                  description: "Timestamp in milliseconds"
+      responses:
+        '200':
+          description: Coins purchased
+
+  /misc/reportPost:
+    post:
+      tags:
+        - Reports
+      summary: Report a Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id, reason, description]
+              properties:
+                post_id:
+                  type: integer
+                reason:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Post reported
+
+  /misc/reportUser:
+    post:
+      tags:
+        - Reports
+      summary: Report a User
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, reason, description]
+              properties:
+                user_id:
+                  type: integer
+                reason:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: User reported
+
+  /misc/fetchAdminNotifications:
+    post:
+      tags:
+        - Notifications
+      summary: Fetch Admin Notifications
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit]
+              properties:
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Admin notifications list
+
+  /misc/fetchActivityNotifications:
+    post:
+      tags:
+        - Notifications
+      summary: Fetch My Activity Notifications
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit]
+              properties:
+                limit:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Activity notifications list
+
+  /misc/pushNotificationToSingleUser:
+    post:
+      tags:
+        - Notifications
+      summary: Push Notification to User (Debug)
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Notification result
 
   /post/createStory:
     post:
       tags:
         - Stories
-      summary: Create story
-      description: Upload a new story
+      summary: Create Story
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required: [type, content]
               properties:
-                media:
+                type:
+                  type: integer
+                  enum: [1, 2]
+                  description: "1=Image, 2=Video"
+                content:
+                  type: string
+                  format: binary
+                thumbnail:
                   type: string
                   format: binary
                 duration:
+                  type: string
+                sound_id:
                   type: integer
       responses:
         '200':
           description: Story created successfully
 
+  /post/viewStory:
+    post:
+      tags:
+        - Stories
+      summary: View a Story
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [story_id]
+              properties:
+                story_id:
+                  type: integer
+      responses:
+        '200':
+          description: Story viewed
+
   /post/fetchStory:
     post:
       tags:
         - Stories
-      summary: Fetch stories
-      description: Get stories from followed users
+      summary: Fetch Following Stories
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       responses:
         '200':
-          description: Stories retrieved successfully
+          description: Stories list
+
+  /post/fetchStoryByID:
+    post:
+      tags:
+        - Stories
+      summary: Fetch Story by ID
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [story_id]
+              properties:
+                story_id:
+                  type: integer
+      responses:
+        '200':
+          description: Story details
+
+  /post/deleteStory:
+    post:
+      tags:
+        - Stories
+      summary: Delete Story
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [story_id]
+              properties:
+                story_id:
+                  type: integer
+      responses:
+        '200':
+          description: Story deleted successfully
 
   /post/serchMusic:
     post:
       tags:
         - Music
-      summary: Search music
-      description: Search for music tracks
+      summary: Search Music
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [limit, keyword]
               properties:
-                query:
+                limit:
+                  type: integer
+                keyword:
                   type: string
-                page:
+                last_item_id:
                   type: integer
       responses:
         '200':
-          description: Search results returned
+          description: Music search results
 
-  /misc/sendGift:
+  /post/fetchMusicExplore:
     post:
       tags:
-        - Wallet & Gifts
-      summary: Send gift
-      description: Send a gift to another user
+        - Music
+      summary: Fetch Explore Music
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [limit]
               properties:
-                recipient_id:
+                limit:
                   type: integer
-                gift_id:
+                last_item_id:
                   type: integer
       responses:
         '200':
-          description: Gift sent successfully
+          description: Music list
 
-  /misc/buyCoins:
+  /post/fetchMusicByCategories:
     post:
       tags:
-        - Wallet & Gifts
-      summary: Buy coins
-      description: Purchase coins for the platform
+        - Music
+      summary: Fetch Music by Category
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [limit, category_id]
               properties:
-                amount:
-                  type: number
-                payment_method:
+                limit:
+                  type: integer
+                category_id:
+                  type: integer
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Music list for category
+
+  /post/fetchSavedMusics:
+    post:
+      tags:
+        - Music
+      summary: Fetch My Saved Musics
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      responses:
+        '200':
+          description: Saved music list
+
+  /settings/fetchSettings:
+    post:
+      tags:
+        - Settings
+      summary: Fetch App Settings
+      description: Get global application settings, configuration, and feature flags.
+      parameters:
+        - in: header
+          name: APIKEY
+          required: true
+          schema:
+            type: string
+            default: retry123
+      responses:
+        '200':
+          description: Settings retrieved successfully
+
+  /settings/uploadFileGivePath:
+    post:
+      tags:
+        - Settings
+      summary: Upload File and Get Path
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: File uploaded
+
+  /settings/deleteFile:
+    post:
+      tags:
+        - Settings
+      summary: Delete File by Path
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filePath]
+              properties:
+                filePath:
                   type: string
       responses:
         '200':
-          description: Purchase successful
+          description: File deleted
 
-  /misc/reportPost:
+  /moderator/moderator_freezeUser:
     post:
       tags:
-        - Moderation
-      summary: Report post
-      description: Report inappropriate post
+        - Moderator Actions
+      summary: Freeze a User
       security:
-        - BearerAuth: []
+        - APIKeyAuth: []
+        - AuthToken: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                post_id:
-                  type: integer
-                reason:
-                  type: string
-      responses:
-        '200':
-          description: Report submitted successfully
-
-  /misc/reportUser:
-    post:
-      tags:
-        - Moderation
-      summary: Report user
-      description: Report inappropriate user
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
+              required: [user_id]
               properties:
                 user_id:
                   type: integer
-                reason:
-                  type: string
       responses:
         '200':
-          description: Report submitted successfully
+          description: User frozen
 
-components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+  /moderator/moderator_unFreezeUser:
+    post:
+      tags:
+        - Moderator Actions
+      summary: Unfreeze a User
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id]
+              properties:
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: User unfrozen
+
+  /moderator/moderator_deletePost:
+    post:
+      tags:
+        - Moderator Actions
+      summary: Delete a Post
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [post_id]
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        '200':
+          description: Post deleted
+
+  /moderator/moderator_deleteStory:
+    post:
+      tags:
+        - Moderator Actions
+      summary: Delete a Story
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [story_id]
+              properties:
+                story_id:
+                  type: integer
+      responses:
+        '200':
+          description: Story deleted
+
+  /post/searchHashtags:
+    post:
+      tags:
+        - Hashtags
+      summary: Search Hashtags
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [limit]
+              properties:
+                limit:
+                  type: integer
+                keyword:
+                  type: string
+                last_item_id:
+                  type: integer
+      responses:
+        '200':
+          description: Hashtags fetched
+
+  /cron/reGeneratePlaceApiToken:
+    get:
+      tags:
+        - Cron Jobs
+      summary: Regenerate Google Place API Token
+      responses:
+        '200':
+          description: Token regenerated
+
+  /cron/deleteExpiredStories:
+    get:
+      tags:
+        - Cron Jobs
+      summary: Delete Expired Stories (Older than 24h)
+      responses:
+        '200':
+          description: Stories deleted
+
+  /cron/deleteOldNotifications:
+    get:
+      tags:
+        - Cron Jobs
+      summary: Delete Old Notifications (Older than 7 days)
+      responses:
+        '200':
+          description: Notifications deleted
+
+  /cron/countDailyActiveUsers:
+    get:
+      tags:
+        - Cron Jobs
+      summary: Count Daily Active Users for Yesterday
+      responses:
+        '200':
+          description: Counted and saved
+
+  /cron/cleanDemoAppData:
+    get:
+      tags:
+        - Cron Jobs
+      summary: Clean Demo App Data
+      responses:
+        '200':
+          description: Data cleaned

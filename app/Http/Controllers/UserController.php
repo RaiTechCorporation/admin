@@ -1035,7 +1035,17 @@ class UserController extends Controller
             $user->fullname = GlobalFunction::cleanString($request->fullname);
             $user->identity = $request->identity;
             $user->device_token = $request->device_token;
-            $user->device = $request->device;
+            
+            // Map device string to integer constant
+            $device = strtolower($request->device);
+            if ($device == 'android') {
+                $user->device = Constants::android;
+            } elseif ($device == 'ios') {
+                $user->device = Constants::iOS;
+            } else {
+                $user->device = (int)$request->device;
+            }
+            
             $user->login_method = $request->login_method;
             $user->username = GlobalFunction::generateUsername($user->fullname);
 
@@ -1063,7 +1073,17 @@ class UserController extends Controller
 
         } else {
             $user->device_token = $request->device_token;
-            $user->device = $request->device;
+            
+            // Map device string to integer constant
+            $device = strtolower($request->device);
+            if ($device == 'android') {
+                $user->device = Constants::android;
+            } elseif ($device == 'ios') {
+                $user->device = Constants::iOS;
+            } else {
+                $user->device = (int)$request->device;
+            }
+            
             $user->login_method = $request->login_method;
             $user->save();
 
@@ -1096,7 +1116,17 @@ class UserController extends Controller
 
         if ($user != null) {
             $user->device_token = $request->device_token;
-            $user->device = $request->device;
+            
+            // Map device string to integer constant
+            $device = strtolower($request->device);
+            if ($device == 'android') {
+                $user->device = Constants::android;
+            } elseif ($device == 'ios') {
+                $user->device = Constants::iOS;
+            } else {
+                $user->device = (int)$request->device;
+            }
+            
             $user->login_method = $request->login_method;
             $user->save();
 

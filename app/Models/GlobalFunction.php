@@ -982,6 +982,10 @@ class GlobalFunction extends Model
 
     public static function saveFileAndGivePath($file)
     {
+        if ($file == null || is_string($file)) {
+            return $file;
+        }
+
         $storageType = env('FILES_STORAGE_LOCATION');
 
         // Clean APP_NAME (remove spaces and special characters)
