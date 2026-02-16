@@ -14,6 +14,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CronsController;
 use App\Http\Controllers\HashtagController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ModeratorController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\NotificationController;
@@ -174,6 +175,12 @@ Route::middleware('checkHeader')->group(function () {
         Route::post('fetchSettings', [SettingsController::class, 'fetchSettings']);
         Route::post('uploadFileGivePath', [SettingsController::class, 'uploadFileGivePath'])->middleware('authorizeUser');
         Route::post('deleteFile', [SettingsController::class, 'deleteFile'])->middleware('authorizeUser');
+    });
+
+    // Media
+    Route::prefix('media')->group(function () {
+        Route::post('upload', [MediaController::class, 'store'])->middleware('authorizeUser');
+        Route::get('{media}', [MediaController::class, 'show'])->middleware('authorizeUser');
     });
 });
 
