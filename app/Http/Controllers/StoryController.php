@@ -135,6 +135,16 @@ class StoryController extends Controller
             ->get()
             ->pluck('to_user');
 
+        foreach ($followingUsers as $fUser) {
+            $fUser->profile_photo = $fUser->profile_photo ? GlobalFunction::generateFileUrl($fUser->profile_photo) : null;
+            if ($fUser->stories) {
+                foreach ($fUser->stories as $story) {
+                    $story->content = $story->content ? GlobalFunction::generateFileUrl($story->content) : null;
+                    $story->thumbnail = $story->thumbnail ? GlobalFunction::generateFileUrl($story->thumbnail) : null;
+                }
+            }
+        }
+
         return GlobalFunction::sendDataResponse(true, 'Stories fetched successfully', $followingUsers);
     }
 

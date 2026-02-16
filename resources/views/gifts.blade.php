@@ -23,12 +23,12 @@
                 <div class="card gift-card text-center">
                     <div class="card-body">
                     <div class="gift-img">
-                        <img src="{{$baseUrl}}{{$gift->image}}" alt="" class="img-fluid">
+                        <img src="{{$gift->image}}" alt="" class="img-fluid">
                     </div>
                     <h5> {{$gift->coin_price}} {{__('Coins')}} </h5>
                     <div class="gift-card-action">
                         <div class='d-flex justify-content-center align-items-center'>
-                            <a href="#" data-gifturl="{{$baseUrl}}{{$gift->image}}" data-coinprice="{{$gift->coin_price}}" rel="{{$gift->id}}" class="action-btn edit d-flex align-items-center justify-content-center btn border rounded-2 text-success ms-1">
+                            <a href="#" data-gifturl="{{$gift->image}}" data-coinprice="{{$gift->coin_price}}" rel="{{$gift->id}}" class="action-btn edit d-flex align-items-center justify-content-center btn border rounded-2 text-success ms-1">
                                 <i class="uil-pen"></i>
                             </a>
                             <a href="#" rel="{{$gift->id}}" class="action-btn delete d-flex align-items-center justify-content-center btn border rounded-2 text-danger ms-1">

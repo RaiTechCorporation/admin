@@ -46,7 +46,7 @@ use App\Models\GlobalFunction;
             <div class="text-center">
                 <div class="card-body">
 
-                        <img src="{{$user->profile_photo == null ? url('assets/img/placeholder.png') : $baseUrl.$user->profile_photo}}" class="rounded-circle avatar-lg img-thumbnail object-fit-cover" alt="profile-image">
+                        <img src="{{$user->profile_photo == null ? url('assets/img/placeholder.png') : $user->profile_photo}}" class="rounded-circle avatar-lg img-thumbnail object-fit-cover" alt="profile-image">
                         <div class="mt-2">
                             <h4 class="mb-0  d-inline">{{$user->username}}
                                 @if ($user->is_verify == 1)

@@ -678,7 +678,21 @@ class GlobalFunction extends Model
         foreach ($posts as $post) {
             $post->is_liked = PostLikes::where('post_id', $post->id)->where('user_id', $user->id)->exists();
             $post->is_saved = PostSaves::where('post_id', $post->id)->where('user_id', $user->id)->exists();
-            $post->user->is_following = Followers::where('from_user_id', $user->id)->where('to_user_id', $post->user_id)->exists();
+
+            if ($post->user) {
+                $post->user->is_following = Followers::where('from_user_id', $user->id)->where('to_user_id', $post->user_id)->exists();
+                $post->user->profile_photo = $post->user->profile_photo ? GlobalFunction::generateFileUrl($post->user->profile_photo) : null;
+            }
+
+            $post->video = $post->video ? GlobalFunction::generateFileUrl($post->video) : null;
+            $post->thumbnail = $post->thumbnail ? GlobalFunction::generateFileUrl($post->thumbnail) : null;
+
+            if ($post->images) {
+                foreach ($post->images as $img) {
+                    $img->image = GlobalFunction::generateFileUrl($img->image);
+                }
+            }
+
             $post->mentioned_users = Users::whereIn('id', explode(',', $post->mentioned_user_ids))
                 ->select(explode(',', Constants::userPublicFields))
                 ->get();
@@ -894,6 +908,14 @@ class GlobalFunction extends Model
             ->with(['music'])
             ->first();
 
+        if ($item) {
+            $item->content = $item->content ? GlobalFunction::generateFileUrl($item->content) : null;
+            $item->thumbnail = $item->thumbnail ? GlobalFunction::generateFileUrl($item->thumbnail) : null;
+            if ($item->user) {
+                $item->user->profile_photo = $item->user->profile_photo ? GlobalFunction::generateFileUrl($item->user->profile_photo) : null;
+            }
+        }
+
         return $item;
     }
     public static function preparePostFullData($id)
@@ -901,6 +923,22 @@ class GlobalFunction extends Model
         $item = Posts::where('id', $id)->with(Constants::postsWithArray)->first();
 
         if ($item != null) {
+            $item->video = $item->video ? GlobalFunction::generateFileUrl($item->video) : null;
+            $item->thumbnail = $item->thumbnail ? GlobalFunction::generateFileUrl($item->thumbnail) : null;
+
+            if ($item->images) {
+                foreach ($item->images as $img) {
+                    $img->image = GlobalFunction::generateFileUrl($img->image);
+                }
+            }
+            if ($item->user) {
+                $item->user->profile_photo = $item->user->profile_photo ? GlobalFunction::generateFileUrl($item->user->profile_photo) : null;
+            }
+            if ($item->music) {
+                $item->music->image = $item->music->image ? GlobalFunction::generateFileUrl($item->music->image) : null;
+                $item->music->sound = $item->music->sound ? GlobalFunction::generateFileUrl($item->music->sound) : null;
+            }
+
             $item->mentioned_users = Users::whereIn('id', explode(',', $item->mentioned_user_ids))->get();
         }
 
@@ -909,7 +947,7 @@ class GlobalFunction extends Model
 
     public static function prepareUserFullData($id)
     {
-        return Users::with([
+        $user = Users::with([
             'links',
             'stories' => function ($query) {
                 $query->where('created_at', '>=', now()->subDay());
@@ -918,6 +956,18 @@ class GlobalFunction extends Model
         ])
             ->where('id', $id)
             ->first();
+
+        if ($user) {
+            $user->profile_photo = $user->profile_photo ? GlobalFunction::generateFileUrl($user->profile_photo) : null;
+            if ($user->stories) {
+                foreach ($user->stories as $story) {
+                    $story->content = $story->content ? GlobalFunction::generateFileUrl($story->content) : null;
+                    $story->thumbnail = $story->thumbnail ? GlobalFunction::generateFileUrl($story->thumbnail) : null;
+                }
+            }
+        }
+
+        return $user;
     }
 
     public static function cleanString($string)

@@ -1274,7 +1274,10 @@ class PostsController extends Controller
         }
         $post->is_liked = PostLikes::where('post_id', $post->id)->where('user_id', $user->id)->exists();
         $post->is_saved = PostSaves::where('post_id', $post->id)->where('user_id', $user->id)->exists();
-        $post->user->is_following = Followers::where('from_user_id', $user->id)->where('to_user_id', $post->user_id)->exists();
+        if ($post->user) {
+            $post->user->is_following = Followers::where('from_user_id', $user->id)->where('to_user_id', $post->user_id)->exists();
+        }
+
         $post->mentioned_users = Users::whereIn('id', explode(',', $post->mentioned_user_ids))->select(explode(',',Constants::userPublicFields))->get();
 
         $data['post'] = $post;

@@ -464,6 +464,9 @@ class WalletController extends Controller
     }
     public function gifts(){
         $gifts = Gifts::all();
+        foreach($gifts as $gift){
+            $gift->image = GlobalFunction::generateFileUrl($gift->image);
+        }
         $baseUrl = GlobalFunction::getItemBaseUrl();
         return view('gifts' ,compact('gifts','baseUrl'));
     }

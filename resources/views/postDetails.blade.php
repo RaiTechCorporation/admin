@@ -50,7 +50,7 @@ use App\Models\GlobalFunction;
                                 @if ($post->post_type == Constants::postTypeReel || $post->post_type == Constants::postTypeVideo)
                                 {{-- Reel & Video --}}
                                 <video rel="" id="video" width="450" height="450" controls>
-                                    <source src="{{$baseUrl.$post->video}}" type="video/mp4">
+                                    <source src="{{$post->video}}" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                                 @elseif ($post->post_type == Constants::postTypeImage)
@@ -60,7 +60,7 @@ use App\Models\GlobalFunction;
                                         {{-- Insert images here --}}
                                         @foreach ($post->images as $image)
                                             <div class="swiper-slide p-0">
-                                                <img src="{{$baseUrl.$image->image}}" alt="" class="img-fluid ">
+                                                <img src="{{$image->image}}" alt="" class="img-fluid ">
                                             </div>
                                         @endforeach
                                     </div>
@@ -95,9 +95,9 @@ use App\Models\GlobalFunction;
                 </div>
                 <div class="card-body">
                     <div class="text-center">
-                        <img class="rounded-circle shadow border" style="width: 120px; height: 120px; object-fit: cover;" src="{{$baseUrl.$music->image}}" alt="">
+                        <img class="rounded-circle shadow border" style="width: 120px; height: 120px; object-fit: cover;" src="{{$music->image}}" alt="">
                         <div class="mt-2">
-                            <audio controls><source src="{{$baseUrl.$music->sound}}"></audio>
+                            <audio controls><source src="{{$music->sound}}"></audio>
                         </div>
                         <h4 class="mb-0">{{$music->title}}</h4>
                         <span class="fs-6">{{$music->artist}}</span>

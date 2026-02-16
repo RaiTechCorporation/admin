@@ -623,6 +623,9 @@ class SettingsController extends Controller
     public function settings()
     {
         $setting = GlobalSettings::first();
+        if ($setting) {
+            $setting->watermark_image = $setting->watermark_image ? GlobalFunction::generateFileUrl($setting->watermark_image) : null;
+        }
         $baseUrl = GlobalFunction::getItemBaseUrl();
         $userType = Session::get('user_type');
 

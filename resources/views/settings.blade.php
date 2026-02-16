@@ -356,7 +356,7 @@
                                             <input type="file" id="watermark_image" name="watermark_image"
                                                 class="form-control">
                                             <img class="mt-2" width="80"
-                                                src="{{ $baseUrl }}{{ $setting->watermark_image }}" alt="">
+                                                src="{{ $setting->watermark_image }}" alt="">
                                         </div>
                                     </div>
                                 </div>
