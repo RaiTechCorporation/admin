@@ -674,13 +674,18 @@ class GlobalFunction extends Model
     public static function processPostsListData($posts, $user)
     {
         $new_post_list = [];
+        $posts = collect($posts);
+        $postIds = $posts->pluck('id')->toArray();
+        $userFollowingIds = GlobalFunction::fetchUserFollowingIds($user->id)->toArray();
+        $likedPostIds = PostLikes::whereIn('post_id', $postIds)->where('user_id', $user->id)->pluck('post_id')->toArray();
+        $savedPostIds = PostSaves::whereIn('post_id', $postIds)->where('user_id', $user->id)->pluck('post_id')->toArray();
 
         foreach ($posts as $post) {
-            $post->is_liked = PostLikes::where('post_id', $post->id)->where('user_id', $user->id)->exists();
-            $post->is_saved = PostSaves::where('post_id', $post->id)->where('user_id', $user->id)->exists();
+            $post->is_liked = in_array($post->id, $likedPostIds);
+            $post->is_saved = in_array($post->id, $savedPostIds);
 
             if ($post->user) {
-                $post->user->is_following = Followers::where('from_user_id', $user->id)->where('to_user_id', $post->user_id)->exists();
+                $post->user->is_following = in_array($post->user_id, $userFollowingIds);
                 $post->user->profile_photo = $post->user->profile_photo ? GlobalFunction::generateFileUrl($post->user->profile_photo) : null;
             }
 
@@ -697,10 +702,10 @@ class GlobalFunction extends Model
                 ->select(explode(',', Constants::userPublicFields))
                 ->get();
             // Filter of who can view post
-            $postUser = Users::find($post->user_id);
-            if ($postUser->who_can_view_post == 1) {
-                $follow = Followers::where('from_user_id', $user->id)->where('to_user_id', $postUser->id)->first();
-                if ($follow != null || $post->user_id == $user->id) {
+            $postUser = $post->user ?: Users::find($post->user_id);
+            if ($postUser && $postUser->who_can_view_post == 1) {
+                $isFollowing = in_array($postUser->id, $userFollowingIds);
+                if ($isFollowing || $post->user_id == $user->id) {
                     array_push($new_post_list, $post);
                 }
             } else {
@@ -1101,7 +1106,7 @@ class GlobalFunction extends Model
             case 'DOSPACE':
                 return env('DO_SPACE_URL');
             case 'PUBLIC':
-                return env('APP_URL') . 'public/storage/';
+                return rtrim(env('APP_URL'), '/') . '/public/storage/';
         }
     }
     public static function generateFileUrl($filePath)
@@ -1114,7 +1119,7 @@ class GlobalFunction extends Model
                 case 'DOSPACE':
                     return env('DO_SPACE_URL') . $filePath;
                 case 'PUBLIC':
-                    return env('APP_URL') . 'public/storage/' . $filePath;
+                    return rtrim(env('APP_URL'), '/') . '/public/storage/' . $filePath;
             }
         }else{
             return null;
