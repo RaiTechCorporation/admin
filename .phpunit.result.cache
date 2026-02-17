@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Feature\\MediaUploadTest::test_can_upload_media":4,"Tests\\Feature\\MediaUploadTest::test_can_retrieve_media_metadata":3},"times":{"Tests\\Feature\\MediaUploadTest::test_can_upload_media":0.878,"Tests\\Feature\\MediaUploadTest::test_can_retrieve_media_metadata":0.025}}

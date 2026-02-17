@@ -993,7 +993,7 @@ class UserController extends Controller
             if ($user->profile_photo) {
                 GlobalFunction::deleteFile($user->profile_photo);
             }
-            $user->profile_photo = GlobalFunction::saveFileAndGivePath($request->profile_photo);
+            $user->profile_photo = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->profile_photo));
         }
         // Handle Username
         if ($request->has('username')) {
@@ -1050,7 +1050,7 @@ class UserController extends Controller
             $user->username = GlobalFunction::generateUsername($user->fullname);
 
             if ($request->has('profile_photo')) {
-                $user->profile_photo = GlobalFunction::saveFileAndGivePath($request->profile_photo);
+                $user->profile_photo = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->profile_photo));
             }
 
             $settings = GlobalSettings::first();

@@ -846,8 +846,8 @@ class GlobalFunction extends Model
 
         // Reel & Feed Video : Video & Thumb
         if ($postType == Constants::postTypeReel || $postType == Constants::postTypeVideo) {
-            $post->video = GlobalFunction::saveFileAndGivePath($request->video);
-            $post->thumbnail = GlobalFunction::saveFileAndGivePath($request->thumbnail);
+            $post->video = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->video));
+            $post->thumbnail = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->thumbnail));
         }
 
         // sound check (Reels post only for now)
@@ -863,7 +863,7 @@ class GlobalFunction extends Model
             foreach ($request->post_images as $image) {
                 $postImage = new PostImages();
                 $postImage->post_id = $post->id;
-                $postImage->image = $image;
+                $postImage->image = GlobalFunction::generateFileUrl($image);
                 $postImage->save();
             }
         }
@@ -1073,6 +1073,14 @@ class GlobalFunction extends Model
 
     public static function deleteFile($filePath)
     {
+        if ($filePath == null) return;
+
+        // If it's a full URL, extract the path
+        $baseUrl = GlobalFunction::getItemBaseUrl();
+        if (str_contains($filePath, $baseUrl)) {
+            $filePath = str_replace($baseUrl, '', $filePath);
+        }
+
         $storageType = env('FILES_STORAGE_LOCATION');
 
         switch ($storageType) {
@@ -1112,6 +1120,9 @@ class GlobalFunction extends Model
     public static function generateFileUrl($filePath)
     {
         if ($filePath != null) {
+            if (filter_var($filePath, FILTER_VALIDATE_URL)) {
+                return $filePath;
+            }
             $storageType = env('FILES_STORAGE_LOCATION');
             switch ($storageType) {
                 case 'AWSS3':
@@ -1121,7 +1132,7 @@ class GlobalFunction extends Model
                 case 'PUBLIC':
                     return rtrim(env('APP_URL'), '/') . '/public/storage/' . $filePath;
             }
-        }else{
+        } else {
             return null;
         }
     }

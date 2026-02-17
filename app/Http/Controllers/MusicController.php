@@ -44,11 +44,11 @@ class MusicController extends Controller
         $music->category_id = $request->category_id;
         if($request->has('image')){
             GlobalFunction::deleteFile($music->image);
-            $music->image = GlobalFunction::saveFileAndGivePath($request->image);
+            $music->image = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->image));
         }
         if($request->has('sound')){
             GlobalFunction::deleteFile($music->sound);
-            $music->sound = GlobalFunction::saveFileAndGivePath($request->sound);
+            $music->sound = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->sound));
         }
         $music->save();
 
@@ -315,8 +315,8 @@ class MusicController extends Controller
         $music->title = $request->title;
         $music->duration = $request->duration;
         $music->artist = $request->artist;
-        $music->sound = GlobalFunction::saveFileAndGivePath($request->sound);
-        $music->image = GlobalFunction::saveFileAndGivePath($request->image);
+        $music->sound = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->sound));
+        $music->image = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->image));
         $music->added_by = Constants::userTypeAdmin;
         $music->save();
 

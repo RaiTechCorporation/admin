@@ -59,13 +59,13 @@ class StoryController extends Controller
         if ($request->hasFile('content')) {
             $file = $request->file('content');
             $path = GlobalFunction::saveFileAndGivePath($file);
-            $story->content = $path;
+            $story->content = GlobalFunction::generateFileUrl($path);
         }
 
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $path = GlobalFunction::saveFileAndGivePath($file);
-            $story->thumbnail = $path;
+            $story->thumbnail = GlobalFunction::generateFileUrl($path);
         }
 
         $story->save();

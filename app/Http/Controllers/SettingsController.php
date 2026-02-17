@@ -916,7 +916,7 @@ class SettingsController extends Controller
             if($setting->watermark_image!= null){
                 GlobalFunction::deleteFile($setting->watermark_image);
             }
-            $setting->watermark_image = GlobalFunction::saveFileAndGivePath($request->watermark_image);
+            $setting->watermark_image = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->watermark_image));
         }
 
         $setting->save();
@@ -1071,11 +1071,12 @@ class SettingsController extends Controller
         }
 
         $path = GlobalFunction::saveFileAndGivePath($request->file('file'));
+        $url = GlobalFunction::generateFileUrl($path);
 
         return response()->json([
             'status' => true,
-            'message' => "file uploaded, here is the path!",
-            'data' => $path,
+            'message' => "file uploaded, here is the url!",
+            'data' => $url,
         ]);
     }
     public function deleteFile(Request $request)

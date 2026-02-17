@@ -1452,9 +1452,9 @@ class PostsController extends Controller
 
         $music = new Musics();
         $music->title = $request->title;
-        $music->sound = GlobalFunction::saveFileAndGivePath($request->sound);
+        $music->sound = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->sound));
         if($request->has('image')){
-            $music->image = GlobalFunction::saveFileAndGivePath($request->image);
+            $music->image = GlobalFunction::generateFileUrl(GlobalFunction::saveFileAndGivePath($request->image));
         }
         $music->duration = $request->duration;
         $music->artist = $request->artist;
