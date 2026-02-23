@@ -1466,4 +1466,68 @@ class PostsController extends Controller
         return GlobalFunction::sendDataResponse(true, 'music added successfully', $music);
 
     }
+
+    public function uploadVideo(Request $request)
+    {
+        $token = $request->header('authtoken');
+        $user = GlobalFunction::getUserFromAuthToken($token);
+        if (!$user) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized']);
+        }
+
+        $rules = [
+            'video' => 'required|mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/x-matroska|max:524288',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messages = $validator->errors()->all();
+            $msg = $messages[0];
+            return response()->json(['status' => false, 'message' => $msg]);
+        }
+
+        $videoPath = GlobalFunction::saveFileAndGivePath($request->file('video'));
+        $videoUrl = GlobalFunction::generateFileUrl($videoPath);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Video uploaded successfully',
+            'data' => [
+                'video' => $videoUrl,
+                'path' => $videoPath,
+            ]
+        ]);
+    }
+
+    public function uploadThumbnail(Request $request)
+    {
+        $token = $request->header('authtoken');
+        $user = GlobalFunction::getUserFromAuthToken($token);
+        if (!$user) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized']);
+        }
+
+        $rules = [
+            'thumbnail' => 'required|mimetypes:image/jpeg,image/png,image/gif|max:10240',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messages = $validator->errors()->all();
+            $msg = $messages[0];
+            return response()->json(['status' => false, 'message' => $msg]);
+        }
+
+        $thumbnailPath = GlobalFunction::saveFileAndGivePath($request->file('thumbnail'));
+        $thumbnailUrl = GlobalFunction::generateFileUrl($thumbnailPath);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Thumbnail uploaded successfully',
+            'data' => [
+                'thumbnail' => $thumbnailUrl,
+                'path' => $thumbnailPath,
+            ]
+        ]);
+    }
 }

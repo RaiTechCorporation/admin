@@ -75,6 +75,10 @@ Route::middleware('checkHeader')->group(function () {
         Route::post('addPost_Feed_Video', [PostsController::class, 'addPost_Feed_Video'])->middleware('authorizeUser');
         Route::post('addPost_Feed_Image', [PostsController::class, 'addPost_Feed_Image'])->middleware('authorizeUser');
         Route::post('addPost_Feed_Text', [PostsController::class, 'addPost_Feed_Text'])->middleware('authorizeUser');
+        
+        // Upload Video and Thumbnail
+        Route::post('uploadVideo', [PostsController::class, 'uploadVideo'])->middleware('authorizeUser');
+        Route::post('uploadThumbnail', [PostsController::class, 'uploadThumbnail'])->middleware('authorizeUser');
 
         // Musics
         Route::post('serchMusic', [MusicController::class, 'serchMusic'])->middleware('authorizeUser');
