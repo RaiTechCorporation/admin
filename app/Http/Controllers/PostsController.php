@@ -1486,7 +1486,10 @@ class PostsController extends Controller
             return response()->json(['status' => false, 'message' => $msg]);
         }
 
-        $videoPath = GlobalFunction::saveFileAndGivePath($request->file('video'), 'videos');
+        $videoFile = $request->file('video');
+        $fileSize = $videoFile->getSize();
+
+        $videoPath = GlobalFunction::saveFileAndGivePath($videoFile, 'videos');
         $videoUrl = GlobalFunction::generateFileUrl($videoPath);
 
         return response()->json([
@@ -1495,7 +1498,11 @@ class PostsController extends Controller
             'data' => [
                 'video' => $videoUrl,
                 'path' => $videoPath,
+                'size' => $fileSize,
+                'uploaded' => $fileSize,
             ]
+        ], 200, [
+            'Content-Type' => 'application/json',
         ]);
     }
 
@@ -1518,7 +1525,10 @@ class PostsController extends Controller
             return response()->json(['status' => false, 'message' => $msg]);
         }
 
-        $thumbnailPath = GlobalFunction::saveFileAndGivePath($request->file('thumbnail'), 'images');
+        $thumbnailFile = $request->file('thumbnail');
+        $fileSize = $thumbnailFile->getSize();
+
+        $thumbnailPath = GlobalFunction::saveFileAndGivePath($thumbnailFile, 'images');
         $thumbnailUrl = GlobalFunction::generateFileUrl($thumbnailPath);
 
         return response()->json([
@@ -1527,7 +1537,11 @@ class PostsController extends Controller
             'data' => [
                 'thumbnail' => $thumbnailUrl,
                 'path' => $thumbnailPath,
+                'size' => $fileSize,
+                'uploaded' => $fileSize,
             ]
+        ], 200, [
+            'Content-Type' => 'application/json',
         ]);
     }
 }

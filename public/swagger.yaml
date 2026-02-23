@@ -1032,8 +1032,18 @@ paths:
     post:
       tags:
         - Post Upload
-      summary: Upload Video File
-      description: Upload a video file for creating a feed video post. Returns the video URL and path.
+      summary: Upload Video File (with Progress Tracking)
+      description: |
+        Upload a video file for creating a feed video post. 
+        
+        **Progress Tracking:**
+        - For Flutter (Dio): Use `onSendProgress` callback to track upload progress
+        - For JavaScript (Fetch/Axios): Monitor `XMLHttpRequest.upload.onprogress` event
+        - Response includes file size information for progress calculation
+        
+        **Example Progress Calculation:**
+        - progress_percent = (bytes_sent / total_bytes) * 100
+        - Use the 'size' field in response to validate total upload
       security:
         - APIKeyAuth: []
         - AuthToken: []
@@ -1059,26 +1069,49 @@ paths:
                 properties:
                   status:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: "Video uploaded successfully"
                   data:
                     type: object
                     properties:
                       video:
                         type: string
                         description: URL of uploaded video
+                        example: "https://groovsta-bucket.s3.ap-south-1.amazonaws.com/videos/1771832526066_video.mp4"
                       path:
                         type: string
                         description: Server path of uploaded video
+                      size:
+                        type: integer
+                        description: Total file size in bytes
+                        example: 52428800
+                      uploaded:
+                        type: integer
+                        description: Bytes uploaded (same as size on success)
+                        example: 52428800
         '400':
           description: Invalid video format or file too large
+        '401':
+          description: Unauthorized
 
   /post/uploadThumbnail:
     post:
       tags:
         - Post Upload
-      summary: Upload Thumbnail Image
-      description: Upload a thumbnail image for a video post. Returns the thumbnail URL and path.
+      summary: Upload Thumbnail Image (with Progress Tracking)
+      description: |
+        Upload a thumbnail image for a video post.
+        
+        **Progress Tracking:**
+        - For Flutter (Dio): Use `onSendProgress` callback to track upload progress
+        - For JavaScript (Fetch/Axios): Monitor `XMLHttpRequest.upload.onprogress` event
+        - Response includes file size information for progress calculation
+        
+        **Example Progress Calculation:**
+        - progress_percent = (bytes_sent / total_bytes) * 100
+        - Use the 'size' field in response to validate total upload
       security:
         - APIKeyAuth: []
         - AuthToken: []
@@ -1104,19 +1137,32 @@ paths:
                 properties:
                   status:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: "Thumbnail uploaded successfully"
                   data:
                     type: object
                     properties:
                       thumbnail:
                         type: string
                         description: URL of uploaded thumbnail
+                        example: "https://groovsta-bucket.s3.ap-south-1.amazonaws.com/images/1771832529456_thumbnail.jpg"
                       path:
                         type: string
                         description: Server path of uploaded thumbnail
+                      size:
+                        type: integer
+                        description: Total file size in bytes
+                        example: 1048576
+                      uploaded:
+                        type: integer
+                        description: Bytes uploaded (same as size on success)
+                        example: 1048576
         '400':
           description: Invalid image format or file too large
+        '401':
+          description: Unauthorized
 
   /post/disLikePost:
     post:
