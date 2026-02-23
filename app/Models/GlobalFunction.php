@@ -1035,25 +1035,25 @@ class GlobalFunction extends Model
         return $randomString;
     }
 
-    public static function saveFileAndGivePath($file)
+    public static function saveFileAndGivePath($file, $subfolder = 'uploads')
     {
         if ($file == null || is_string($file)) {
             return $file;
         }
 
-        $storageType = env('FILES_STORAGE_LOCATION');
+        $storageType = env('FILES_STORAGE_LOCATION', 'AWSS3');
 
         // Clean APP_NAME (remove spaces and special characters)
         $rawAppName = env('APP_NAME');
         $cleanAppName = $rawAppName ? preg_replace('/[^A-Za-z0-9_\-]/', '_', $rawAppName) : '';
 
         // Create file name without spaces
-        $fileName = time() . '_' . $cleanAppName . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+        $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
 
         // Set base path with cleaned app name
         $appNamePath = $cleanAppName ? $cleanAppName . '/' : '';
 
-        $filePath = $storageType === 'PUBLIC' ? 'uploads/' . $fileName : $appNamePath . 'uploads/' . $fileName;
+        $filePath = $storageType === 'PUBLIC' ? $subfolder . '/' . $fileName : $appNamePath . $subfolder . '/' . $fileName;
 
         // Store file in the appropriate disk
         switch ($storageType) {
@@ -1081,7 +1081,7 @@ class GlobalFunction extends Model
             $filePath = str_replace($baseUrl, '', $filePath);
         }
 
-        $storageType = env('FILES_STORAGE_LOCATION');
+        $storageType = env('FILES_STORAGE_LOCATION', 'AWSS3');
 
         switch ($storageType) {
             case 'AWSS3':
@@ -1107,10 +1107,10 @@ class GlobalFunction extends Model
 
     public static function getItemBaseUrl()
     {
-        $storageType = env('FILES_STORAGE_LOCATION');
+        $storageType = env('FILES_STORAGE_LOCATION', 'AWSS3');
         switch ($storageType) {
             case 'AWSS3':
-                return env('AWS_ITEM_BASE_URL');
+                return env('AWS_URL') ?: env('AWS_ITEM_BASE_URL');
             case 'DOSPACE':
                 return env('DO_SPACE_URL');
             case 'PUBLIC':
@@ -1123,10 +1123,11 @@ class GlobalFunction extends Model
             if (filter_var($filePath, FILTER_VALIDATE_URL)) {
                 return $filePath;
             }
-            $storageType = env('FILES_STORAGE_LOCATION');
+            $storageType = env('FILES_STORAGE_LOCATION', 'AWSS3');
             switch ($storageType) {
                 case 'AWSS3':
-                    return env('AWS_ITEM_BASE_URL') . $filePath;
+                    $baseUrl = env('AWS_URL') ?: env('AWS_ITEM_BASE_URL');
+                    return rtrim($baseUrl, '/') . '/' . ltrim($filePath, '/');
                 case 'DOSPACE':
                     return env('DO_SPACE_URL') . $filePath;
                 case 'PUBLIC':

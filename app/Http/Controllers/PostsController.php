@@ -1486,7 +1486,7 @@ class PostsController extends Controller
             return response()->json(['status' => false, 'message' => $msg]);
         }
 
-        $videoPath = GlobalFunction::saveFileAndGivePath($request->file('video'));
+        $videoPath = GlobalFunction::saveFileAndGivePath($request->file('video'), 'videos');
         $videoUrl = GlobalFunction::generateFileUrl($videoPath);
 
         return response()->json([
@@ -1518,7 +1518,7 @@ class PostsController extends Controller
             return response()->json(['status' => false, 'message' => $msg]);
         }
 
-        $thumbnailPath = GlobalFunction::saveFileAndGivePath($request->file('thumbnail'));
+        $thumbnailPath = GlobalFunction::saveFileAndGivePath($request->file('thumbnail'), 'images');
         $thumbnailUrl = GlobalFunction::generateFileUrl($thumbnailPath);
 
         return response()->json([
