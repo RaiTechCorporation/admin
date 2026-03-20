@@ -121,6 +121,10 @@ class GlobalFunction extends Model
                 $data['comment'] = $comment;
                 $data['post'] = GlobalFunction::preparePostFullData($comment->post_id);
                 break;
+            case Constants::notify_mention_story:
+                $story = GlobalFunction::prepareStoryFullData($notifyItem->data_id);
+                $data['story'] = $story;
+                break;
         }
 
         if (Arr::has($data, 'post') && $data['post'] != null) {
@@ -919,6 +923,10 @@ class GlobalFunction extends Model
             if ($item->user) {
                 $item->user->profile_photo = $item->user->profile_photo ? GlobalFunction::generateFileUrl($item->user->profile_photo) : null;
             }
+
+            $item->mentioned_users = Users::whereIn('id', explode(',', $item->mentioned_user_ids))
+                ->select(explode(',', Constants::userPublicFields))
+                ->get();
         }
 
         return $item;
@@ -968,6 +976,9 @@ class GlobalFunction extends Model
                 foreach ($user->stories as $story) {
                     $story->content = $story->content ? GlobalFunction::generateFileUrl($story->content) : null;
                     $story->thumbnail = $story->thumbnail ? GlobalFunction::generateFileUrl($story->thumbnail) : null;
+                    $story->mentioned_users = Users::whereIn('id', explode(',', $story->mentioned_user_ids))
+                        ->select(explode(',', Constants::userPublicFields))
+                        ->get();
                 }
             }
         }

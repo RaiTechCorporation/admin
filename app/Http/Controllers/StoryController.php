@@ -68,7 +68,18 @@ class StoryController extends Controller
             $story->thumbnail = GlobalFunction::generateFileUrl($path);
         }
 
+        if ($request->has('mentioned_user_ids')) {
+            $story->mentioned_user_ids = GlobalFunction::cleanString($request->mentioned_user_ids);
+        }
+
         $story->save();
+
+        if ($request->has('mentioned_user_ids')) {
+            $mentionedUsers = Users::whereIn('id', explode(',', $story->mentioned_user_ids))->get();
+            foreach ($mentionedUsers as $mUser) {
+                GlobalFunction::insertUserNotification(Constants::notify_mention_story, $user->id, $mUser->id, $story->id);
+            }
+        }
 
         $story = GlobalFunction::prepareStoryFullData($story->id);
 
@@ -141,6 +152,9 @@ class StoryController extends Controller
                 foreach ($fUser->stories as $story) {
                     $story->content = $story->content ? GlobalFunction::generateFileUrl($story->content) : null;
                     $story->thumbnail = $story->thumbnail ? GlobalFunction::generateFileUrl($story->thumbnail) : null;
+                    $story->mentioned_users = Users::whereIn('id', explode(',', $story->mentioned_user_ids))
+                        ->select(explode(',', Constants::userPublicFields))
+                        ->get();
                 }
             }
         }
@@ -219,7 +233,7 @@ class StoryController extends Controller
             $msg = $messages[0];
             return response()->json(['status' => false, 'message' => $msg]);
         }
-        $story = Story::where('id',$request->story_id)->with('music')->with('user:'.Constants::userPublicFields)->first();
+        $story = GlobalFunction::prepareStoryFullData($request->story_id);
 
         return GlobalFunction::sendDataResponse(true,'story fetched successfully', $story);
     }

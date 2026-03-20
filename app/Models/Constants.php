@@ -48,6 +48,7 @@ final class Constants
     const notify_gift_user = 6;
     const notify_reply_comment = 7;
     const notify_mention_reply = 8;
+    const notify_mention_story = 9;
 
     const userDummy = 1;
     const userReal = 0;

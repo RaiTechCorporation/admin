@@ -1863,6 +1863,9 @@ paths:
                   type: string
                 sound_id:
                   type: integer
+                mentioned_user_ids:
+                  type: string
+                  description: "Comma-separated user IDs (e.g. '1,2,3')"
       responses:
         '200':
           description: Story created successfully
