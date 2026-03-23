@@ -578,6 +578,30 @@ paths:
       responses:
         '200':
           description: User profile details fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      is_close_friend:
+                        type: boolean
+                        description: "Whether this user is in your close friends list"
+                      is_following:
+                        type: boolean
+                      follow_status:
+                        type: integer
+                        description: "0=None, 1=I follow them, 2=They follow me, 3=Mutual"
 
   /user/updateLastUsedAt:
     post:
@@ -1874,6 +1898,10 @@ paths:
       tags:
         - Stories
       summary: Create Story
+      description: |
+        Uploads a new story. 
+        - If `is_close_friend: 1`, only close friends can see it.
+        - Mentioned users receive notification type `10` for close friend stories.
       security:
         - APIKeyAuth: []
         - AuthToken: []
@@ -1938,6 +1966,9 @@ paths:
       tags:
         - Stories
       summary: Fetch Following Stories
+      description: |
+        Retrieves recent stories from users you follow.
+        - Stories with `is_close_friend: 1` are only shown if you are in the author's close friends list.
       security:
         - APIKeyAuth: []
         - AuthToken: []
