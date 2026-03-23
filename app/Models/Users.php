@@ -19,4 +19,9 @@ class Users extends Model
         return $this->hasMany(Story::class, 'user_id', 'id');
     }
 
+    public function closeFriends()
+    {
+        return $this->hasMany(CloseFriend::class, 'user_id', 'id');
+    }
+
 }

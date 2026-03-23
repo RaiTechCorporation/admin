@@ -47,6 +47,7 @@ class StoryController extends Controller
         $story->user_id = $user->id;
         $story->duration = $request->duration;
         $story->type = $request->type;
+        $story->is_close_friend = $request->has('is_close_friend') ? $request->is_close_friend : 0;
 
         if($request->has('sound_id')){
             $sound = Musics::find($request->sound_id);
@@ -77,7 +78,8 @@ class StoryController extends Controller
         if ($request->has('mentioned_user_ids')) {
             $mentionedUsers = Users::whereIn('id', explode(',', $story->mentioned_user_ids))->get();
             foreach ($mentionedUsers as $mUser) {
-                GlobalFunction::insertUserNotification(Constants::notify_mention_story, $user->id, $mUser->id, $story->id);
+                $notificationType = $story->is_close_friend == 1 ? Constants::notify_close_friend_mention_story : Constants::notify_mention_story;
+                GlobalFunction::insertUserNotification($notificationType, $user->id, $mUser->id, $story->id);
             }
         }
 
@@ -131,16 +133,31 @@ class StoryController extends Controller
 
         $followingUsers = Followers::where('from_user_id', $user->id)
             ->whereNotIn('to_user_id', $blockedUserIds) // Ensure blocked users are excluded
-            ->whereHas('to_user', function ($query) {
+            ->whereHas('to_user', function ($query) use ($user) {
                 $query->where('is_freez', 0) // Exclude frozen users
-                      ->whereHas('stories', function ($storyQuery) {
-                          $storyQuery->where('created_at', '>=', now()->subDay()); // Fetch only recent stories
+                      ->whereHas('stories', function ($storyQuery) use ($user) {
+                          $storyQuery->where('created_at', '>=', now()->subDay())
+                                     ->where(function ($q) use ($user) {
+                                         $q->where('is_close_friend', 0)
+                                           ->orWhere(function ($sq) use ($user) {
+                                               $sq->where('is_close_friend', 1)
+                                                  ->whereRaw('stories.user_id IN (SELECT user_id FROM close_friends WHERE friend_id = ?)', [$user->id]);
+                                           });
+                                     });
                       });
             })
-            ->with(['to_user' => function ($query) {
+            ->with(['to_user' => function ($query) use ($user) {
                 $query->select(explode(',', Constants::userPublicFields)) // Select only specified fields
-                      ->with(['stories' => function ($storyQuery) {
-                          $storyQuery->where('created_at', '>=', now()->subDay())->with('music');
+                      ->with(['stories' => function ($storyQuery) use ($user) {
+                          $storyQuery->where('created_at', '>=', now()->subDay())
+                                     ->where(function ($q) use ($user) {
+                                         $q->where('is_close_friend', 0)
+                                           ->orWhere(function ($sq) use ($user) {
+                                               $sq->where('is_close_friend', 1)
+                                                  ->whereRaw('stories.user_id IN (SELECT user_id FROM close_friends WHERE friend_id = ?)', [$user->id]);
+                                           });
+                                     })
+                                     ->with('music');
                       }]);
             }])
             ->get()

@@ -125,6 +125,10 @@ class GlobalFunction extends Model
                 $story = GlobalFunction::prepareStoryFullData($notifyItem->data_id);
                 $data['story'] = $story;
                 break;
+            case Constants::notify_close_friend_mention_story:
+                $story = GlobalFunction::prepareStoryFullData($notifyItem->data_id);
+                $data['story'] = $story;
+                break;
         }
 
         if (Arr::has($data, 'post') && $data['post'] != null) {

@@ -58,6 +58,9 @@ Route::middleware('checkHeader')->group(function () {
         Route::post('fetchMyFollowers', [UserController::class, 'fetchMyFollowers'])->middleware('authorizeUser');
         Route::post('fetchMyFollowings', [UserController::class, 'fetchMyFollowings'])->middleware('authorizeUser');
 
+        Route::post('toggleCloseFriend', [UserController::class, 'toggleCloseFriend'])->middleware('authorizeUser');
+        Route::post('fetchCloseFriends', [UserController::class, 'fetchCloseFriends'])->middleware('authorizeUser');
+
         Route::post('searchUsers', [UserController::class, 'searchUsers'])->middleware('authorizeUser');
 
         // Delete My Account

@@ -11,6 +11,7 @@ use App\Models\UserBlocks;
 use App\Models\UserLinks;
 use App\Models\UsernameRestrictions;
 use App\Models\Users;
+use App\Models\CloseFriend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -370,6 +371,52 @@ class UserController extends Controller
 
     }
 
+    public function toggleCloseFriend(Request $request)
+    {
+        $token = $request->header('authtoken');
+        $user = GlobalFunction::getUserFromAuthToken($token);
+        if ($user->is_freez == 1) {
+            return ['status' => false, 'message' => "this user is freezed!"];
+        }
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:tbl_users,id',
+        ]);
+
+        if ($validator->fails()) {
+            $messages = $validator->errors()->all();
+            return response()->json(['status' => false, 'message' => $messages[0]]);
+        }
+
+        $closeFriend = CloseFriend::where('user_id', $user->id)->where('friend_id', $request->user_id)->first();
+
+        if ($closeFriend) {
+            $closeFriend->delete();
+            return GlobalFunction::sendSimpleResponse(true, 'User removed from close friends');
+        } else {
+            $closeFriend = new CloseFriend();
+            $closeFriend->user_id = $user->id;
+            $closeFriend->friend_id = $request->user_id;
+            $closeFriend->save();
+            return GlobalFunction::sendSimpleResponse(true, 'User added to close friends');
+        }
+    }
+
+    public function fetchCloseFriends(Request $request)
+    {
+        $token = $request->header('authtoken');
+        $user = GlobalFunction::getUserFromAuthToken($token);
+        if ($user->is_freez == 1) {
+            return ['status' => false, 'message' => "this user is freezed!"];
+        }
+
+        $closeFriends = CloseFriend::where('user_id', $user->id)
+            ->with(['friend:' . Constants::userPublicFields])
+            ->get();
+
+        return GlobalFunction::sendDataResponse(true, 'Close friends fetched successfully', $closeFriends);
+    }
+
     public function fetchUserDetails(Request $request){
         $token = $request->header('authtoken');
         $user = GlobalFunction::getUserFromAuthToken($token);
@@ -397,6 +444,11 @@ class UserController extends Controller
          $dataUser->is_following = Followers::where([
             'from_user_id'=> $user->id,
             'to_user_id'=> $dataUser->id,
+        ])->exists();
+
+        $dataUser->is_close_friend = CloseFriend::where([
+            'user_id' => $user->id,
+            'friend_id' => $dataUser->id,
         ])->exists();
 
         // Check follow status
