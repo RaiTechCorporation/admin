@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('close_friends', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('friend_id');
-            $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('tbl_users')->onDelete('cascade');
-            $table->foreign('friend_id')->references('id')->on('tbl_users')->onDelete('cascade');
-            $table->unique(['user_id', 'friend_id']);
-        });
+        if (!Schema::hasTable('close_friends')) {
+            Schema::create('close_friends', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained('tbl_users')->onDelete('cascade');
+                $table->foreignId('friend_id')->constrained('tbl_users')->onDelete('cascade');
+                $table->timestamps();
+                $table->unique(['user_id', 'friend_id']);
+            });
+        }
     }
 
     /**
