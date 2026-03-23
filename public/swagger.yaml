@@ -482,6 +482,42 @@ paths:
         '200':
           description: My followings list
 
+  /user/toggleCloseFriend:
+    post:
+      tags:
+        - User Actions
+      summary: Toggle Close Friend Status
+      description: Adds or removes a user from the current user's close friends list.
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id]
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Success message returned
+
+  /user/fetchCloseFriends:
+    post:
+      tags:
+        - User Actions
+      summary: Fetch My Close Friends
+      security:
+        - APIKeyAuth: []
+        - AuthToken: []
+      responses:
+        '200':
+          description: Close friends list fetched successfully
+
   /user/searchUsers:
     post:
       tags:
@@ -1866,6 +1902,11 @@ paths:
                 mentioned_user_ids:
                   type: string
                   description: "Comma-separated user IDs (e.g. '1,2,3')"
+                is_close_friend:
+                  type: integer
+                  enum: [0, 1]
+                  description: "1 = Close Friend only, 0 = Public (default)"
+                  example: 0
       responses:
         '200':
           description: Story created successfully
