@@ -51,7 +51,7 @@ class LoginController extends Controller
         Artisan::call('storage:link');
         if (Session::get('username') && Session::get('userpassword') && Session::get('user_type')) {
             $adminUser = Admin::where('admin_username', Session::get('username'))->first();
-            if (decrypt($adminUser->admin_password) == Session::get('userpassword')) {
+            if ($adminUser && decrypt($adminUser->admin_password) == Session::get('userpassword')) {
                 return redirect('dashboard');
             }
         }
@@ -60,22 +60,29 @@ class LoginController extends Controller
 
     function checkLogin(Request $request)
     {
-        $data = Admin::where('admin_username', $request->username)->first();
+        try {
+            $data = Admin::where('admin_username', $request->username)->first();
 
-        if ($data && $request->username == $data['admin_username'] && $request->password == decrypt($data->admin_password)) {
-            $request->session()->put('username', $data['admin_username']);
-            $request->session()->put('userpassword', $request->password);
-            $request->session()->put('user_type', $data['user_type']);
+            if ($data && $request->username == $data['admin_username'] && $request->password == decrypt($data->admin_password)) {
+                $request->session()->put('username', $data['admin_username']);
+                $request->session()->put('userpassword', $request->password);
+                $request->session()->put('user_type', $data['user_type']);
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Login Successfully',
-                'data' => $data,
-            ]);
-        } else {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Login Successfully',
+                    'data' => $data,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Wrong credentials!',
+                ]);
+            }
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Wrong credentials!',
+                'message' => 'Wrong credentials or system error!',
             ]);
         }
     }
